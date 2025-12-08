@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan & Pay - Documentation & Code Package</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .architecture {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .architecture h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .terminal {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .terminal h3 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .terminal p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .file-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .file-card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .file-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        .file-meta {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #5568d3;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .footer p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📦 Scan & Pay</h1>
+            <p>Shopify Payment System - Complete Documentation & Code Package</p>
+            <div style="margin-top: 20px;">
+                <span class="badge">5-Terminal Architecture</span>
+                <span class="badge">PayID Integration</span>
+                <span class="badge">Global Payments</span>
+                <span class="badge">Firebase</span>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Total Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Terminals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Docs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Code Files</div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="architecture">
+            <h2>🏗️ The 5-Terminal System</h2>
+            <div class="terminal">
+                <h3>Terminal 1: Core API</h3>
+                <p>Authentication, OTP (SMS/Email), PIN codes, Login/Logout</p>
+            </div>
+            <div class="terminal">
+                <h3>Terminal 2: Shopify Merchant Backend</h3>
+                <p>Merchant dashboard, settings, profile management</p>
+            </div>
+            <div class="terminal">
+                <h3>Terminal 3: Firebase Data Layer</h3>
+                <p>Database, cloud functions, real-time updates</p>
+            </div>
+            <div class="terminal">
+                <h3>Terminal 4: Payment Verification API ⭐</h3>
+                <p><strong>The Innovation:</strong> Returns only 3 states: paid, unpaid, or pending</p>
+            </div>
+            <div class="terminal">
+                <h3>Terminal 5: Shopify Client Frontend</h3>
+                <p>Buyer checkout, QR codes, payment interface</p>
+            </div>
+        </div>
+
+        <!-- Documentation Files -->
+        <div class="section">
+            <h2>📚 Documentation Files</h2>
+            <div class="file-grid">
+                <div class="file-card">
+                    <div class="file-icon">📘</div>
+                    <h3>CLAUDE.md</h3>
+                    <p>Complete system documentation with architecture, code examples, and deployment guide</p>
+                    <div class="file-meta">55 KB • Markdown</div>
+                    <a href="CLAUDE.md" class="download-btn" download>Download</a>
+                </div>
+
+                <div class="file-card">
+                    <div class="file-icon">📗</div>
+                    <h3>README.md</h3>
+                    <p>Quick start guide with overview, configuration, and testing instructions</p>
+                    <div class="file-meta">12 KB • Markdown</div>
+                    <a href="README.md" class="download-btn" download>Download</a>
+                </div>
+
+                <div class="file-card">
+                    <div class="file-icon">✅</div>
+                    <h3>DEPLOYMENT-CHECKLIST.md</h3>
+                    <p>Step-by-step deployment guide with complete checklist</p>
+                    <div class="file-meta">12 KB • Markdown</div>
+                    <a href="DEPLOYMENT-CHECKLIST.md" class="download-btn" download>Download</a>
+                </div>
+
+                <div class="file-card">
+                    <div class="file-icon">⚡</div>
+                    <h3>QUICK-REFERENCE.md</h3>
+                    <p>Essential quick reference card with commands and solutions</p>
+                    <div class="file-meta">8.4 KB • Markdown</div>
+                    <a href="QUICK-REFERENCE.md" class="download-btn" download>Download</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Files -->
+        <div class="section">
+            <h2>💻 Code Files</h2>
+            <div class="file-grid">
+                <div class="file-card">
+                    <div class="file-icon">🔧</div>
+                    <h3>global-payments-webhook.js</h3>
+                    <p>Firebase Cloud Function for webhook handling and payment verification</p>
+                    <div class="file-meta">14 KB • JavaScript</div>
+                    <a href="global-payments-webhook.js" class="download-btn" download>Download</a>
+                </div>
+
+                <div class="file-card">
+                    <div class="file-icon">📱</div>
+                    <h3>payid-qr-payment.html</h3>
+                    <p>Standalone QR code payment page with PayID integration</p>
+                    <div class="file-meta">8.7 KB • HTML</div>
+                    <a href="payid-qr-payment.html" class="download-btn" download>Download</a>
+                </div>
+
+                <div class="file-card">
+                    <div class="file-icon">🛒</div>
+                    <h3>shopify-buyer-checkout.html</h3>
+                    <p>Complete Shopify client checkout with cart and verification</p>
+                    <div class="file-meta">8.7 KB • HTML</div>
+                    <a href="shopify-buyer-checkout.html" class="download-btn" download>Download</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Resources -->
+        <div class="section">
+            <h2>📋 Additional Resources</h2>
+            <div class="file-grid">
+                <div class="file-card">
+                    <div class="file-icon">📦</div>
+                    <h3>FILE-MANIFEST.md</h3>
+                    <p>Complete file listing with descriptions and download links</p>
+                    <div class="file-meta">9.1 KB • Markdown</div>
+                    <a href="FILE-MANIFEST.md" class="download-btn" download>Download</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting Started -->
+        <div class="section">
+            <h2>🚀 Getting Started</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #333; margin-bottom: 15px;">For First-Time Users:</h3>
+                <ol style="color: #666; line-height: 2;">
+                    <li>Download <strong>README.md</strong> first for overview</li>
+                    <li>Review <strong>QUICK-REFERENCE.md</strong> for essentials</li>
+                    <li>Read <strong>CLAUDE.md</strong> for complete details</li>
+                    <li>Use <strong>DEPLOYMENT-CHECKLIST.md</strong> when deploying</li>
+                </ol>
+            </div>
+
+            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <h3 style="color: #856404; margin-bottom: 10px;">⚡ Quick Deploy:</h3>
+                <ol style="color: #856404; line-height: 2;">
+                    <li>Copy <strong>global-payments-webhook.js</strong> to functions/</li>
+                    <li>Configure Firebase credentials</li>
+                    <li>Deploy with: <code>firebase deploy --only functions</code></li>
+                    <li>Test with provided curl commands</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="section">
+            <h2>✨ Key Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">🔐 Secure</h3>
+                    <p style="color: #666; font-size: 14px;">Webhook signature verification, crypto-based references, Firebase security rules</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">⚡ Fast</h3>
+                    <p style="color: #666; font-size: 14px;">Real-time verification, instant QR generation, webhook processing</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">🔄 Scalable</h3>
+                    <p style="color: #666; font-size: 14px;">5-terminal architecture, Firebase auto-scaling, distributed system</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 Mobile</h3>
+                    <p style="color: #666; font-size: 14px;">QR code payments, responsive design, works on any device</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Scan & Pay - Shopify Payment System</strong></p>
+            <p>Senax Enterprises Pty Ltd</p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">
+                Developed: November-December 2024<br>
+                Documentation Created: December 4, 2025<br>
+                Total Package Size: ~148KB
+            </p>
+            <div style="margin-top: 20px;">
+                <span class="badge">Firebase</span>
+                <span class="badge">Shopify</span>
+                <span class="badge">Global Payments</span>
+                <span class="badge">PayID</span>
+                <span class="badge">QRCode.js</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

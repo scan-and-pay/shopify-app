@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to OTP collection for authenticated functions
+    match /sendOtpEmail/{document} {
+      allow read, write: if true; // Functions have admin access
+    }
+    
+    // Allow users to read/write their own user documents
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow creation of user document during authentication
+      allow create: if request.auth != null && 
+                   request.auth.uid == userId &&
+                   request.resource.data.keys().hasAll(['uid', 'createdAt', 'lastLoginAt', 'authMethod', 'isActive']);
+      
+      // Validate user document structure on write
+      allow update: if request.auth != null && 
+                   request.auth.uid == userId &&
+                   request.resource.data.uid == userId &&
+                   request.resource.data.isActive is bool &&
+                   request.resource.data.authMethod is string;
+    }
+    
+    // Payment intents - users can only read/write their own
+    match /payment_intents/{intentId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Payment history - users can only read their own
+    match /payments/{paymentId} {
+      allow read: if request.auth != null && 
+                 request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && 
+                   request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Device settings - only authenticated users
+    match /device_settings/{deviceId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

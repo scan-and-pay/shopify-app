@@ -1,0 +1,139 @@
+# Scan & Pay - Shopify PayID Payment System
+
+## Project Identity
+**Name:** Scan & Pay  
+**Type:** Shopify Payment Plugin  
+**Tech Stack:** Firebase + Global Payments Oceania + PayID  
+**Architecture:** 5-Terminal Distributed System  
+**Innovation:** Payment verification separated from processing
+
+## Core Concept
+
+We built a Shopify payment system where **Terminal 4** is a dedicated API that ONLY verifies if a payment was received. It doesn't process payments—it just checks: paid, unpaid, or pending.
+
+## 5-Terminal Architecture
+
+```
+Terminal 1: Core API (Auth, OTP, PIN)
+Terminal 2: Shopify Merchant Backend (Dashboard, Settings)
+Terminal 3: Firebase (Database, Functions)
+Terminal 4: Payment Verification API ⭐ Returns: paid | unpaid | pending
+Terminal 5: Shopify Buyer Frontend (Cart, QR codes, Checkout)
+```
+
+## Key Technical Details
+
+### Reference Generation
+```javascript
+// Always use crypto, NEVER Math.random()
+crypto.getRandomValues(array); // Format: REF-2024-A3K9N7P4X2M8
+```
+
+### Amount Handling
+```javascript
+// Global Payments sends CENTS, not dollars
+const webhookAmount = 15000; // $150.00 in cents
+const displayAmount = webhookAmount / 100;
+```
+
+### Payment Flow
+1. Buyer scans QR → pays in bank
+2. Global Payments → webhook to our system
+3. We store transaction in Firebase
+4. Buyer clicks "I've Paid"
+5. Terminal 4 queries Firebase → returns paid/unpaid/pending
+
+### Webhook Payload
+```json
+{
+  "payload": {
+    "id": "transaction-id",
+    "payment": {
+      "amount": 15000,  // CENTS
+      "currencyCode": "AUD"
+    },
+    "result": {
+      "status": "approved"  // or "declined" or "pending"
+    }
+  },
+  "reference": "REF-2024-ABC123"
+}
+```
+
+## Files Available
+- `global-payments-webhook.js` - Cloud Function (webhook + verify API)
+- `payid-qr-payment.html` - Standalone QR payment page
+- `shopify-buyer-checkout.html` - Complete checkout flow
+- `CLAUDE.md` - Full documentation
+
+## Firebase Schema
+
+### Collections
+- `/merchants/{id}` - Merchant profiles + PayID
+- `/products/{id}` - Synced from Shopify
+- `/orders/{id}` - Orders with payment status
+- `/transactions/{id}` - Global Payments transactions
+- `/otps/{id}` - OTP codes (5min expiry, max 3 attempts)
+
+### Security Rules
+- Merchants: read/write own data
+- Products: read all, write if authenticated
+- Transactions: read if authenticated, write via functions only
+
+## Environment Config
+```bash
+globalpayments.private_key="..."
+twilio.account_sid="..."
+twilio.auth_token="..."
+twilio.phone_number="+61XXXXXXXXX"
+sendgrid.api_key="..."
+sendgrid.from_email="..."
+```
+
+## Common Commands
+```bash
+firebase deploy --only functions
+firebase functions:log
+firebase emulators:start
+firebase functions:config:get
+```
+
+## API Endpoints
+- `POST /globalPaymentsWebhook` - Receives GP webhooks
+- `POST /verifyPayment` - Checks payment status
+- `POST /sendSMSOTP` - Sends SMS code
+- `POST /verifyOTP` - Validates OTP
+
+## Critical Rules
+1. **Always use crypto** for random generation (not Math.random())
+2. **Always work in CENTS** internally (divide by 100 for display)
+3. **Always verify signatures** on webhooks (HMAC SHA-256)
+4. **Keep terminals separated** - don't mix concerns
+5. **Reference CLAUDE.md** for complete details
+
+## Project Location
+`/mnt/user-data/outputs/` - All files available here
+
+## What You Can Help With
+- Write/modify Cloud Functions
+- Update frontend code
+- Fix bugs and add features
+- Write tests
+- Update Firebase rules
+- Debug webhook issues
+- Optimize code
+- Add new endpoints
+
+## Development Workflow
+1. Make changes locally
+2. Test with emulators: `firebase emulators:start`
+3. Deploy: `firebase deploy --only functions:functionName`
+4. Check logs: `firebase functions:log`
+
+## Remember
+- This is a VERIFICATION system, not a processing system
+- Terminal 4 = single job = verify payment status
+- Amounts in CENTS (×100), references are crypto-random
+- Full docs in CLAUDE.md if you need deep details
+
+Ready to code! 🚀

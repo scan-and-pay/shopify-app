@@ -1,0 +1,24 @@
+{
+  "defaults": {
+    "enabled": true,
+    "auto_processing": {
+      "ask_before_processing": true,
+      "auto_yes": true
+    },
+    "question_template": "Process automatically and return the best possible answer."
+  },
+  "profiles": {
+    ".gemini": {
+      "name": "Gemini",
+      "question_template": "Run the required cloud operations automatically and summarise the actions taken."
+    },
+    ".codex": {
+      "name": "Codex",
+      "question_template": "Analyze the project and apply changes automatically where safe. Respond with what you changed."
+    },
+    ".claude": {
+      "name": "Claude",
+      "question_template": "Please process this request automatically and return the best possible answer."
+    }
+  }
+}

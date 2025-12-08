@@ -1,0 +1,26 @@
+{
+  "name": "payid-verification",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PayID payment gateway with QR code for Shopify checkout",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "shopify app dev",
+    "deploy": "shopify app deploy"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@shopify/ui-extensions": "^2025.7.0",
+    "@shopify/ui-extensions-react": "^2025.7.0",
+    "react-reconciler": "^0.29.0",
+    "preact": "^10.19.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  }
+}

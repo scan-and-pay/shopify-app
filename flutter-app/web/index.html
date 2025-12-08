@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="scan__pay">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>ScanPay - Secure Payment Solutions</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js';
+    
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "FIREBASE_API_KEY_WEB",
+      authDomain: "scan-and-pay-guihzm.firebaseapp.com",
+      projectId: "scan-and-pay-guihzm",
+      storageBucket: "scan-and-pay-guihzm.firebasestorage.app",
+      messagingSenderId: "291088983781",
+      appId: "1:291088983781:web:7cfd846d343deb60f4960c"
+    };
+
+    // Initialize Firebase
+    window.firebaseApp = initializeApp(firebaseConfig);
+    window.firebaseAuth = getAuth(window.firebaseApp);
+  </script>
+</head>
+<body>
+  <!-- reCAPTCHA container for Firebase Auth -->
+  <div id="recaptcha-container"></div>
+  
+  <script>
+    // Configure reCAPTCHA for Firebase Auth
+    window.recaptchaVerifier = null;
+    window.recaptchaWidgetId = null;
+  </script>
+  
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
+
+

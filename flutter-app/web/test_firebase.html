@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Test - ScanPay</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #8B5CF6, #A855F7);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+    }
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    #status {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Firebase Test</h1>
+    <p>Test Firebase Authentication for ScanPay</p>
+    
+    <div class="form-group">
+      <input type="email" id="email" placeholder="Enter your email">
+    </div>
+    
+    <button onclick="sendEmailLink()">Send Email Link</button>
+    <button onclick="testConnection()">Test Firebase Connection</button>
+    
+    <div id="status"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+    
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "FIREBASE_API_KEY_WEB_TEST",
+      authDomain: "scan-and-pay-guihzm.firebaseapp.com",
+      projectId: "scan-and-pay-guihzm",
+      storageBucket: "scan-and-pay-guihzm.firebasestorage.app",
+      messagingSenderId: "291088983781",
+      appId: "1:291088983781:web:7cfd846d343deb60f4960c"
+    };
+
+    // Initialize Firebase
+    window.firebaseApp = initializeApp(firebaseConfig);
+    window.firebaseAuth = getAuth(window.firebaseApp);
+    
+    const status = document.getElementById('status');
+    
+    window.testConnection = function() {
+      status.innerHTML = '✅ Firebase initialized successfully!<br>Project: ' + firebaseConfig.projectId;
+    };
+    
+    window.sendEmailLink = function() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        status.innerHTML = '❌ Please enter an email address';
+        return;
+      }
+      
+      const actionCodeSettings = {
+        url: window.location.origin + '/finishSignUp.html',
+        handleCodeInApp: true,
+      };
+      
+      status.innerHTML = '📧 Sending email link...';
+      
+      sendSignInLinkToEmail(window.firebaseAuth, email, actionCodeSettings)
+        .then(() => {
+          window.localStorage.setItem('emailForSignIn', email);
+          status.innerHTML = '✅ Email link sent to ' + email + '!<br>Check your inbox and click the link.';
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          status.innerHTML = '❌ Error: ' + error.message;
+        });
+    };
+    
+    // Check if we're handling an email link sign-in
+    if (isSignInWithEmailLink(window.firebaseAuth, window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        email = window.prompt('Please provide your email for confirmation');
+      }
+      
+      if (email) {
+        signInWithEmailLink(window.firebaseAuth, email, window.location.href)
+          .then((result) => {
+            window.localStorage.removeItem('emailForSignIn');
+            status.innerHTML = '✅ Successfully signed in as: ' + result.user.email;
+          })
+          .catch((error) => {
+            status.innerHTML = '❌ Error during sign-in: ' + error.message;
+          });
+      }
+    }
+  </script>
+</body>
+</html>

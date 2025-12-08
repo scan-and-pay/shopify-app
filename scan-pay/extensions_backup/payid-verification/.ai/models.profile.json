@@ -1,0 +1,16 @@
+{
+  "defaultCodingModel": "codex",
+  "models": {
+    "codex": "gpt-5.1-codex-max",
+    "gemini": "gemini-3.0-pro-exp",
+    "claude": "claude-4.5-opus"
+  },
+  "routing": {
+    "frontend": "codex",
+    "integrations/shopify-app/client": "codex",
+    "backend": "claude",
+    "firebase-functions": "gemini",
+    "docs": "gemini",
+    "architecture": "claude"
+  }
+}

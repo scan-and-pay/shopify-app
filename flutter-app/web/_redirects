@@ -1,0 +1,8 @@
+# Netlify redirects for Flutter SPA
+
+# Firebase Auth links - redirect to root with query params preserved
+/__/auth/links    /index.html    200
+/__/auth/action   /index.html    200
+
+# Catch all other routes and serve index.html (SPA routing)
+/*    /index.html   200

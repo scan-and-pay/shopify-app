@@ -1,0 +1,27 @@
+{
+  "workspaceRoot": ".",
+  "policies": {
+    "autoApply": true,
+    "confirmEdits": false,
+    "formatOnApply": true,
+    "organizeImports": true,
+    "autoCreateFiles": true
+  },
+  "access": {
+    "allow": [
+      "bash:ls *",
+      "bash:pwd *",
+      "bash:cat *",
+      "bash:npm *",
+      "bash:npx *",
+      "bash:git *",
+      "bash:firebase *",
+      "bash:gcloud * scan-and-pay-*"
+    ],
+    "deny": [
+      "bash:rm -rf /",
+      "bash:rm *C:*"
+    ],
+    "ask": []
+  }
+}

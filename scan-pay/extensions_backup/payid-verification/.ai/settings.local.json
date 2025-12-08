@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(if [ -f .env ])",
+      "Bash(then echo \"EXISTS\")",
+      "Bash(else echo \"MISSING\")",
+      "Bash(fi)",
+      "Bash(chmod:*)",
+      "Bash(if [ -d \"firebase-functions\" ])",
+      "Bash(else echo \"NOT_FOUND\")",
+      "Bash(node -e:*)",
+      "Bash(then echo \"Firebase-functions exists. Creating archive...\")",
+      "Bash(tar:*)",
+      "Bash(else echo \"Directory not found\")",
+      "Bash(if [ ! -d \"firebase-functions\" ])",
+      "Bash(then echo \"✓ firebase-functions directory removed successfully\")",
+      "Bash(else echo \"✗ Failed to remove directory\")",
+      "Bash(then echo \"✓ firebase-functions: REMOVED\")",
+      "Bash(else echo \"✗ firebase-functions: STILL EXISTS\")",
+      "Bash(if:*)",
+      "Bash(then echo \"✓ transaction-verifier.js: CREATED\")",
+      "Bash(else echo \"✗ File not found\")",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

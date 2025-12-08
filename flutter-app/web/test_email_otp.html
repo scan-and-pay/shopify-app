@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email OTP Test - ScanPay</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #8B5CF6, #A855F7);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      min-height: 50px;
+    }
+    .step {
+      margin: 20px 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
+    }
+    .otp-input {
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 8px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📧 Email OTP Test</h1>
+    <p>Test Firebase Functions email OTP for ScanPay</p>
+    
+    <div class="step">
+      <h3>Step 1: Send OTP</h3>
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Enter your email">
+      </div>
+      <button onclick="sendOTP()">Send 6-Digit Code</button>
+    </div>
+    
+    <div class="step">
+      <h3>Step 2: Verify OTP</h3>
+      <div class="form-group">
+        <input type="text" id="otp" placeholder="Enter 6-digit code" class="otp-input" maxlength="6">
+      </div>
+      <button onclick="verifyOTP()">Verify Code</button>
+    </div>
+    
+    <div id="status">Ready to test...</div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-functions.js';
+    
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "FIREBASE_API_KEY_WEB_TEST",
+      authDomain: "scan-and-pay-guihzm.firebaseapp.com",
+      projectId: "scan-and-pay-guihzm",
+      storageBucket: "scan-and-pay-guihzm.firebasestorage.app",
+      messagingSenderId: "291088983781",
+      appId: "1:291088983781:web:7cfd846d343deb60f4960c"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const functions = getFunctions(app, 'australia-southeast1');
+    
+    const status = document.getElementById('status');
+    
+    window.sendOTP = async function() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        status.innerHTML = '❌ Please enter an email address';
+        return;
+      }
+      
+      status.innerHTML = '📧 Sending OTP...';
+      
+      try {
+        const sendOtpEmail = httpsCallable(functions, 'sendOtpEmail');
+        const result = await sendOtpEmail({ email: email });
+        
+        status.innerHTML = '✅ OTP sent to ' + email + '!<br>Check your inbox for a 6-digit code.';
+        document.getElementById('otp').focus();
+      } catch (error) {
+        console.error('Error:', error);
+        status.innerHTML = '❌ Error: ' + error.message;
+      }
+    };
+    
+    window.verifyOTP = async function() {
+      const email = document.getElementById('email').value;
+      const otp = document.getElementById('otp').value;
+      
+      if (!email || !otp) {
+        status.innerHTML = '❌ Please enter both email and OTP';
+        return;
+      }
+      
+      if (otp.length !== 6) {
+        status.innerHTML = '❌ OTP must be 6 digits';
+        return;
+      }
+      
+      status.innerHTML = '🔐 Verifying OTP...';
+      
+      try {
+        const verifyOtpEmail = httpsCallable(functions, 'verifyOtpEmail');
+        const result = await verifyOtpEmail({ email: email, otp: otp });
+        
+        if (result.data.success) {
+          status.innerHTML = '✅ OTP verified successfully!<br>Custom token received: ' + result.data.customToken.substring(0, 50) + '...';
+        } else {
+          status.innerHTML = '❌ ' + (result.data.error || 'Verification failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        status.innerHTML = '❌ Error: ' + error.message;
+      }
+    };
+    
+    // Auto-format OTP input
+    document.getElementById('otp').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = value;
+    });
+    
+    status.innerHTML = '🔥 Firebase Functions connected to australia-southeast1 region<br>Ready to test email OTP!';
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "lib/**"
+      - "pubspec.yaml"
+      - ".github/workflows/flutter-ci.yml"
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - id: secrets
+        name: Fetch secrets from Secret Manager
+        uses: google-github-actions/get-secretmanager-secrets@v1
+        with:
+          secrets: |
+            FIREBASE_API_KEY_WEB:projects/${{ secrets.FIREBASE_PROJECT_ID }}/secrets/FIREBASE_API_KEY_WEB
+            FIREBASE_API_KEY_MOBILE:projects/${{ secrets.FIREBASE_PROJECT_ID }}/secrets/FIREBASE_API_KEY_MOBILE
+            FIREBASE_PROJECT_ID:projects/${{ secrets.FIREBASE_PROJECT_ID }}/secrets/FIREBASE_PROJECT_ID
+
+      - name: Write .env for dart-defines
+        run: |
+          cat <<'EOF' > .env
+          FIREBASE_API_KEY_WEB=${{ steps.secrets.outputs.FIREBASE_API_KEY_WEB }}
+          FIREBASE_API_KEY_MOBILE=${{ steps.secrets.outputs.FIREBASE_API_KEY_MOBILE }}
+          FIREBASE_PROJECT_ID=${{ steps.secrets.outputs.FIREBASE_PROJECT_ID }}
+          EOF
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests with dart-defines
+        run: flutter test --dart-define-from-file=.env
