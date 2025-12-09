@@ -1,17 +1,19 @@
 # Stage 1: Build the Flutter web app
-FROM debian:latest AS build-env
+FROM debian:bookworm-slim AS build-env
 
-# Install Flutter dependencies
+# Install minimal dependencies for Flutter Web
+# We removed 'libgconf-2-4' which caused your error
 RUN apt-get update && \
-    apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3 && \
+    apt-get install -y curl git wget unzip libglu1-mesa python3 && \
     apt-get clean
 
 # Clone Flutter (stable channel)
 RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
 ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
-# Enable web capabilities
+# Enable web capabilities and accept licenses
 RUN flutter config --enable-web
+RUN flutter doctor -v
 
 # Copy your app files
 WORKDIR /app
