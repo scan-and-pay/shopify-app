@@ -15,31 +15,6 @@ import 'package:flutter/foundation.dart'
 /// );
 /// ```
 class DefaultFirebaseOptions {
-  static const _webApiKey = String.fromEnvironment(
-    'FIREBASE_API_KEY_WEB',
-    defaultValue: 'FIREBASE_API_KEY_WEB_TEST',
-  );
-
-  static const _mobileApiKey = String.fromEnvironment(
-    'FIREBASE_API_KEY_MOBILE',
-    defaultValue: 'FIREBASE_API_KEY_MOBILE',
-  );
-
-  static const _webAppId = String.fromEnvironment(
-    'FIREBASE_WEB_APP_ID',
-    defaultValue: '1:291088983781:web:7cfd846d343deb60f4960c',
-  );
-
-  static const _androidAppId = String.fromEnvironment(
-    'FIREBASE_ANDROID_APP_ID',
-    defaultValue: '1:291088983781:android:4d27b5b1bcfbdf6bf4960c',
-  );
-
-  static const _iosAppId = String.fromEnvironment(
-    'FIREBASE_IOS_APP_ID',
-    defaultValue: '1:291088983781:ios:b39e16066519db5ff4960c',
-  );
-
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
@@ -72,8 +47,8 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: _webApiKey,
-    appId: _webAppId,
+    apiKey: 'AIzaSyAQkRmpCCDTHO3-Upw7VnRy7mwqnWyNNxo',
+    appId: '1:291088983781:web:7cfd846d343deb60f4960c',
     messagingSenderId: '291088983781',
     projectId: 'scan-and-pay-guihzm',
     authDomain: 'scan-and-pay-guihzm.firebaseapp.com',
@@ -81,16 +56,16 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: _mobileApiKey,
-    appId: _androidAppId,
+    apiKey: 'AIzaSyDChy06CAi6YkcSbpELoeA66JfdO4kTbGI',
+    appId: '1:291088983781:android:4d27b5b1bcfbdf6bf4960c',
     messagingSenderId: '291088983781',
     projectId: 'scan-and-pay-guihzm',
     storageBucket: 'scan-and-pay-guihzm.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: _mobileApiKey,
-    appId: _iosAppId,
+    apiKey: 'AIzaSyDChy06CAi6YkcSbpELoeA66JfdO4kTbGI',
+    appId: '1:291088983781:ios:b39e16066519db5ff4960c',
     messagingSenderId: '291088983781',
     projectId: 'scan-and-pay-guihzm',
     storageBucket: 'scan-and-pay-guihzm.firebasestorage.app',
