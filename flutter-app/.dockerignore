@@ -1,0 +1,48 @@
+# Build outputs
+build/
+.dart_tool/
+*.dill
+*.kernel_snapshot
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Android
+android/
+!android/app/src/main/res/
+
+# iOS
+ios/
+
+# Testing
+test/
+coverage/
+
+# Documentation
+README.md
+*.md
+
+# Logs
+*.log
+
+# Environment files (will be created at build time)
+.env
+
+# Firebase
+firebase.json
+.firebaserc
+firestore.rules
+firestore.indexes.json
+functions/
+
+# Other
+.metadata
+pubspec.lock

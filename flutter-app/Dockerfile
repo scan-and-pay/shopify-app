@@ -6,25 +6,26 @@ RUN apt-get update && \
     apt-get install -y curl git wget unzip libglu1-mesa python3 && \
     apt-get clean
 
-# Clone Flutter
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
+# Clone Flutter and checkout stable channel
+RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter && \
+    cd /usr/local/flutter && \
+    git checkout stable
 ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
-# Enable web
-RUN flutter config --enable-web
-RUN flutter doctor -v
+# Enable web and run flutter doctor
+RUN flutter config --enable-web && \
+    flutter doctor -v
 
 # Copy app files
 WORKDIR /app
 COPY . .
 
-# --- NEW LINE HERE ---
 # Create an empty .env file so the build doesn't crash on missing assets
 RUN touch .env
-# ---------------------
 
-# Build the web app
-RUN flutter build web
+# Get dependencies and build the web app
+RUN flutter pub get && \
+    flutter build web --release
 
 # Stage 2: Serve with Nginx
 FROM nginx:1.21.1-alpine
