@@ -26,27 +26,26 @@ export function verifyShopifyHmac(
   }
 
   try {
-    // Convert rawBody to string if it's a Buffer
-    const bodyString = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
-
-    // Compute HMAC-SHA256 using the raw body
     const generatedHmac = createHmac("sha256", secret)
-      .update(bodyString, "utf8")
+      .update(rawBody.toString(), "utf-8")
       .digest("base64");
 
-    // Use timing-safe comparison to prevent timing attacks
-    const isValid = timingSafeEqual(
-      Buffer.from(generatedHmac, "utf8"),
-      Buffer.from(hmacHeader, "utf8")
-    );
+    const hmacBuffer = Buffer.from(hmacHeader, "base64");
+    const generatedHmacBuffer = Buffer.from(generatedHmac, "base64");
+
+    let isValid = false;
+    try {
+      isValid = timingSafeEqual(generatedHmacBuffer, hmacBuffer);
+    } catch (e) {
+      // ignore
+    }
 
     if (!isValid) {
       console.error("HMAC verification failed");
-      console.error("Expected:", generatedHmac);
-      console.error("Received:", hmacHeader);
+      return false;
     }
 
-    return isValid;
+    return true;
   } catch (error) {
     console.error("Error during HMAC verification:", error);
     return false;
@@ -61,6 +60,24 @@ export function verifyShopifyHmac(
  * @returns Promise<Buffer> - The raw request body as Buffer
  */
 export async function getRawBody(request: Request): Promise<Buffer> {
+  if (request.bodyUsed) {
+    // If the body is already used, we can't clone it and read it again.
+    // This is a limitation of the current approach.
+    // We will have to rely on the fact that the body has been read into a raw buffer before.
+    // This is a workaround, and a better solution would be to use a middleware that
+    // captures the raw body before it's parsed.
+    console.warn(
+      "Request body already used. HMAC verification might not be accurate."
+    );
+    // This is a bit of a hack, but we'll try to get the raw body from the request
+    // by reading it again. This might not work in all cases.
+    const newRequest = new Request(request.url, {
+      method: request.method,
+      headers: request.headers,
+      body: await request.text(),
+    });
+    return Buffer.from(await newRequest.arrayBuffer());
+  }
   // Clone the request so we don't consume the original stream
   const clonedRequest = request.clone();
 
