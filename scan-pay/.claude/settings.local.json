@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(grep:*)",
+      "Bash(firebase functions:config:set:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd Shopify GDPR compliance webhooks and app installation tracking\n\n- Add AppInstallation model to track shop installations\n- Implement GDPR compliance webhooks (customers/data_request, customers/redact, shop/redact)\n- Update app configuration with production URLs (merchants.scanandpay.com.au)\n- Add webhook deployment documentation and scripts\n- Update Dockerfiles for production deployment\n- Add nginx configuration for webhook handling\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
