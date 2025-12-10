@@ -1,9 +1,12 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
+const { defineSecret } = require('firebase-functions/params');
+
+// Define secret
+const BASIQ_API_KEY = defineSecret('BASIQ_API_KEY');
 
 // Basiq API configuration
-const BASIQ_API_KEY = functions.config().basiq?.api_key || 'YOUR_BASIQ_API_KEY';
 const BASIQ_BASE_URL = 'https://au-api.basiq.io';
 const BASIQ_VERSION = '3.0';
 
@@ -13,27 +16,29 @@ let tokenExpiresAt = null;
 // Helper function to authenticate with Basiq
 async function authenticateBasiq() {
     console.log('🔐 Starting Basiq authentication...');
-    
+
     if (accessToken && tokenExpiresAt && new Date() < tokenExpiresAt) {
         console.log('✅ Using cached access token');
         return accessToken;
     }
 
+    const apiKey = BASIQ_API_KEY.value();
+
     try {
         console.log('📡 Making authentication request to:', `${BASIQ_BASE_URL}/token`);
         console.log('📋 Request headers:', {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Basic ${BASIQ_API_KEY.substring(0, 20)}...`,
+            'Authorization': `Basic ${apiKey.substring(0, 20)}...`,
             'basiq-version': BASIQ_VERSION
         });
-        
-        const response = await axios.post(`${BASIQ_BASE_URL}/token`, 
+
+        const response = await axios.post(`${BASIQ_BASE_URL}/token`,
             new URLSearchParams({
                 'scope': 'SERVER_ACCESS'
             }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Basic ${BASIQ_API_KEY}`,
+                    'Authorization': `Basic ${apiKey}`,
                     'basiq-version': BASIQ_VERSION
                 }
             }
@@ -68,6 +73,7 @@ async function getAuthHeaders() {
 // Cloud Function to create Basiq Connect URL
 exports.createBasiqConnect = functions
     .region('australia-southeast1')
+    .runWith({ secrets: [BASIQ_API_KEY] })
     .https.onCall(async (data, context) => {
         console.log('🚀 createBasiqConnect function started');
         console.log('📋 Input data:', JSON.stringify(data, null, 2));
@@ -161,14 +167,15 @@ exports.createBasiqConnect = functions
             console.log('🎫 Step 2: Generating CLIENT_ACCESS token...');
             console.log('📋 Client token payload:', { scope: 'CLIENT_ACCESS', userId: basiqUser.id });
             
-            const clientTokenResponse = await axios.post(`${BASIQ_BASE_URL}/token`, 
+            const apiKey = BASIQ_API_KEY.value();
+            const clientTokenResponse = await axios.post(`${BASIQ_BASE_URL}/token`,
                 new URLSearchParams({
                     'scope': 'CLIENT_ACCESS',
                     'userId': basiqUser.id
                 }), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Basic ${BASIQ_API_KEY}`,
+                        'Authorization': `Basic ${apiKey}`,
                         'basiq-version': BASIQ_VERSION
                     }
                 }
@@ -339,6 +346,7 @@ async function handleConnectionFailed(data) {
 // Cloud Function to get user's Basiq connection status
 exports.getBasiqStatus = functions
     .region('australia-southeast1')
+    .runWith({ secrets: [BASIQ_API_KEY] })
     .https.onCall(async (data, context) => {
         try {
             if (!context.auth) {

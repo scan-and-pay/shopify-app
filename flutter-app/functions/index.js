@@ -1,5 +1,17 @@
 const admin = require("firebase-admin");
+const { defineSecret } = require("firebase-functions/params");
 
+// Define secrets - These will be automatically injected from Google Secret Manager
+const FIREBASE_PROJECT_ID = defineSecret("FIREBASE_PROJECT_ID");
+const FIREBASE_API_KEY = defineSecret("FIREBASE_API_KEY");
+const FIREBASE_STORAGE_BUCKET = defineSecret("FIREBASE_STORAGE_BUCKET");
+const GLOBALPAYMENTS_MASTER_KEY = defineSecret("GLOBALPAYMENTS_MASTER_KEY");
+const GLOBALPAYMENTS_BASE_URL = defineSecret("GLOBALPAYMENTS_BASE_URL");
+const MAILGUN_API_KEY = defineSecret("MAILGUN_API_KEY");
+const MAILGUN_DOMAIN = defineSecret("MAILGUN_DOMAIN");
+const BASIQ_API_KEY = defineSecret("BASIQ_API_KEY");
+const ENCRYPTION_KEY = defineSecret("ENCRYPTION_KEY");
+const SHOPIFY_API_SECRET = defineSecret("SHOPIFY_API_SECRET");
 
 // Initialize Firebase Admin only if not already initialized
 admin.initializeApp();
@@ -43,3 +55,17 @@ exports.appUninstalled = shopifyWebhooks.appUninstalled;
 exports.customersDataRequest = shopifyWebhooks.customersDataRequest;
 exports.customersRedact = shopifyWebhooks.customersRedact;
 exports.shopRedact = shopifyWebhooks.shopRedact;
+
+// Export secrets for use in other modules
+module.exports.secrets = {
+  FIREBASE_PROJECT_ID,
+  FIREBASE_API_KEY,
+  FIREBASE_STORAGE_BUCKET,
+  GLOBALPAYMENTS_MASTER_KEY,
+  GLOBALPAYMENTS_BASE_URL,
+  MAILGUN_API_KEY,
+  MAILGUN_DOMAIN,
+  BASIQ_API_KEY,
+  ENCRYPTION_KEY,
+  SHOPIFY_API_SECRET
+};

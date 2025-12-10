@@ -1,12 +1,25 @@
 const functions = require('firebase-functions');
 const axios = require('axios');
+const { defineSecret } = require('firebase-functions/params');
+
+// Define secrets
+const GLOBALPAYMENTS_MASTER_KEY = defineSecret('GLOBALPAYMENTS_MASTER_KEY');
+const GLOBALPAYMENTS_BASE_URL = defineSecret('GLOBALPAYMENTS_BASE_URL');
 
 // Global Payments Configuration
-// Configure via Firebase CLI: firebase functions:config:set globalpayments.global_payments_master_key="YOUR_KEY"
-const GLOBAL_PAYMENTS_CONFIG = {
-  baseUrl: functions.config().globalpayments?.base_url || 'https://sandbox.api.gpaunz.com',
-  masterKey: functions.config().globalpayments?.global_payments_master_key
-};
+// These values will be injected from Google Secret Manager at runtime
+let GLOBAL_PAYMENTS_CONFIG = null;
+
+// Initialize config from secrets (called at runtime)
+function getConfig() {
+  if (!GLOBAL_PAYMENTS_CONFIG) {
+    GLOBAL_PAYMENTS_CONFIG = {
+      baseUrl: GLOBALPAYMENTS_BASE_URL.value() || 'https://sandbox.api.gpaunz.com',
+      masterKey: GLOBALPAYMENTS_MASTER_KEY.value()
+    };
+  }
+  return GLOBAL_PAYMENTS_CONFIG;
+}
 
 // Cache for API key
 let apiKeyCache = {
@@ -19,11 +32,13 @@ let apiKeyCache = {
  * The API key is cached for 1 hour to reduce API calls
  */
 async function getApiKey() {
+  const config = getConfig();
+
   // Validate configuration
-  if (!GLOBAL_PAYMENTS_CONFIG.masterKey) {
+  if (!config.masterKey) {
     throw new functions.https.HttpsError(
       'failed-precondition',
-      'Global Payments master key not configured. Run: firebase functions:config:set globalpayments.global_payments_master_key="YOUR_KEY"'
+      'Global Payments master key not configured in Secret Manager'
     );
   }
 
@@ -34,12 +49,12 @@ async function getApiKey() {
 
   try {
     const response = await axios.post(
-      `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/apikeys`,
+      `${config.baseUrl}/apikeys`,
       {},
       {
         headers: {
           'Content-Type': 'application/json',
-          'x-master-key': GLOBAL_PAYMENTS_CONFIG.masterKey
+          'x-master-key': config.masterKey
         }
       }
     );
@@ -64,6 +79,9 @@ async function getApiKey() {
  */
 exports.createGlobalPaymentsCustomer = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -79,8 +97,9 @@ exports.createGlobalPaymentsCustomer = functions
     try {
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       const response = await axios.post(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers`,
+        `${config.baseUrl}/customers`,
         {
           name,
           email,
@@ -110,6 +129,9 @@ exports.createGlobalPaymentsCustomer = functions
  */
 exports.createPayToAgreement = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -163,8 +185,9 @@ exports.createPayToAgreement = functions
         reference: reference || `${context.auth.uid}_${Date.now()}`
       };
 
+      const config = getConfig();
       const response = await axios.post(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers/${customerId}/PaymentInstruments`,
+        `${config.baseUrl}/customers/${customerId}/PaymentInstruments`,
         requestBody,
         {
           headers: {
@@ -190,6 +213,9 @@ exports.createPayToAgreement = functions
  */
 exports.createPayIdInstrument = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -259,8 +285,9 @@ exports.createPayIdInstrument = functions
         reference: reference || `${context.auth.uid}_${Date.now()}`
       };
 
+      const config = getConfig();
       const response = await axios.post(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers/${customerId}/PaymentInstruments`,
+        `${config.baseUrl}/customers/${customerId}/PaymentInstruments`,
         requestBody,
         {
           headers: {
@@ -285,6 +312,9 @@ exports.createPayIdInstrument = functions
  */
 exports.processGlobalPayment = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -300,8 +330,9 @@ exports.processGlobalPayment = functions
     try {
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       const response = await axios.post(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/payments`,
+        `${config.baseUrl}/payments`,
         {
           paymentInstrument: paymentInstrumentId,
           amount: amountInCents,
@@ -332,6 +363,9 @@ exports.processGlobalPayment = functions
  */
 exports.getGlobalPaymentsCustomer = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -347,8 +381,9 @@ exports.getGlobalPaymentsCustomer = functions
     try {
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       const response = await axios.get(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers/${customerId}`,
+        `${config.baseUrl}/customers/${customerId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -371,6 +406,9 @@ exports.getGlobalPaymentsCustomer = functions
  */
 exports.getGlobalPaymentInstrument = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -386,8 +424,9 @@ exports.getGlobalPaymentInstrument = functions
     try {
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       const response = await axios.get(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers/${customerId}/PaymentInstruments/${instrumentId}`,
+        `${config.baseUrl}/customers/${customerId}/PaymentInstruments/${instrumentId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -410,6 +449,9 @@ exports.getGlobalPaymentInstrument = functions
  */
 exports.cancelGlobalPaymentAgreement = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -425,8 +467,9 @@ exports.cancelGlobalPaymentAgreement = functions
     try {
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       await axios.delete(
-        `${GLOBAL_PAYMENTS_CONFIG.baseUrl}/customers/${customerId}/PaymentInstruments/${instrumentId}`,
+        `${config.baseUrl}/customers/${customerId}/PaymentInstruments/${instrumentId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -450,15 +493,19 @@ exports.cancelGlobalPaymentAgreement = functions
  */
 exports.checkGlobalPaymentsHealth = functions
   .region("australia-southeast1")
+  .runWith({
+    secrets: [GLOBALPAYMENTS_MASTER_KEY, GLOBALPAYMENTS_BASE_URL]
+  })
   .https.onCall(async (data, context) => {
     try {
       // Try to get an API key to verify configuration
       const apiKey = await getApiKey();
 
+      const config = getConfig();
       return {
         healthy: true,
         configured: true,
-        apiUrl: GLOBAL_PAYMENTS_CONFIG.baseUrl,
+        apiUrl: config.baseUrl,
         region: 'australia-southeast1',
         timestamp: new Date().toISOString(),
         message: 'Global Payments API is configured and ready',
