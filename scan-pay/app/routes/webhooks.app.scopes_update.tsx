@@ -14,7 +14,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const secret = process.env.SHOPIFY_API_SECRET || "";
     if (!verifyShopifyHmac(rawBody, hmacHeader, secret)) {
       console.error("Invalid HMAC signature for app/scopes_update webhook");
-      return new Response("Unauthorized", { status: 401 });
+      return new Response("Invalid HMAC", { status: 400 });
     }
 
     // Step 4: Parse the body after HMAC verification
@@ -45,6 +45,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return new Response(null, { status: 200 });
   } catch (error) {
     console.error("Error processing app/scopes_update webhook:", error);
-    return new Response("Unauthorized", { status: 401 });
+    return new Response("Invalid HMAC", { status: 400 });
   }
 };
