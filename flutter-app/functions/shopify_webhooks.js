@@ -1,6 +1,10 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const crypto = require('crypto');
+const { defineSecret } = require('firebase-functions/params');
+
+// Define secret
+const SHOPIFY_API_SECRET = defineSecret('SHOPIFY_API_SECRET');
 
 /**
  * Verify Shopify HMAC signature
@@ -9,7 +13,7 @@ const crypto = require('crypto');
  * @returns {boolean} - True if signature is valid
  */
 function verifyShopifyWebhook(bodyBuffer, hmacHeader) {
-  const shopifySecret = process.env.SHOPIFY_API_SECRET || functions.config().shopify?.api_secret;
+  const shopifySecret = SHOPIFY_API_SECRET.value();
 
   if (!shopifySecret) {
     console.error('SHOPIFY_API_SECRET not configured');
@@ -28,7 +32,9 @@ function verifyShopifyWebhook(bodyBuffer, hmacHeader) {
  * Webhook: app/uninstalled
  * Called when merchant uninstalls the app
  */
-exports.appUninstalled = functions.https.onRequest(async (req, res) => {
+exports.appUninstalled = functions
+  .runWith({ secrets: [SHOPIFY_API_SECRET] })
+  .https.onRequest(async (req, res) => {
   // Set CORS headers
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST');
@@ -96,7 +102,9 @@ exports.appUninstalled = functions.https.onRequest(async (req, res) => {
  * Webhook: customers/data_request
  * GDPR compliance - customer requests their data
  */
-exports.customersDataRequest = functions.https.onRequest(async (req, res) => {
+exports.customersDataRequest = functions
+  .runWith({ secrets: [SHOPIFY_API_SECRET] })
+  .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST');
   res.set('Access-Control-Allow-Headers', 'Content-Type, X-Shopify-Hmac-Sha256, X-Shopify-Shop-Domain, X-Shopify-Topic');
@@ -164,7 +172,9 @@ exports.customersDataRequest = functions.https.onRequest(async (req, res) => {
  * Webhook: customers/redact
  * GDPR compliance - delete customer data
  */
-exports.customersRedact = functions.https.onRequest(async (req, res) => {
+exports.customersRedact = functions
+  .runWith({ secrets: [SHOPIFY_API_SECRET] })
+  .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST');
   res.set('Access-Control-Allow-Headers', 'Content-Type, X-Shopify-Hmac-Sha256, X-Shopify-Shop-Domain, X-Shopify-Topic');
@@ -246,7 +256,9 @@ exports.customersRedact = functions.https.onRequest(async (req, res) => {
  * Webhook: shop/redact
  * GDPR compliance - delete all shop data (48 hours after uninstall)
  */
-exports.shopRedact = functions.https.onRequest(async (req, res) => {
+exports.shopRedact = functions
+  .runWith({ secrets: [SHOPIFY_API_SECRET] })
+  .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST');
   res.set('Access-Control-Allow-Headers', 'Content-Type, X-Shopify-Hmac-Sha256, X-Shopify-Shop-Domain, X-Shopify-Topic');

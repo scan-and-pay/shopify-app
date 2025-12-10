@@ -1,12 +1,21 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { defineSecret } = require('firebase-functions/params');
 
-  // The admin SDK is initialized by the managed environment.
-  const db = admin.firestore();
+// Define secrets
+const MAILGUN_API_KEY = defineSecret('MAILGUN_API_KEY');
+const MAILGUN_DOMAIN = defineSecret('MAILGUN_DOMAIN');
+
+// The admin SDK is initialized by the managed environment.
+const db = admin.firestore();
 
 exports.sendOtp = functions
   .region('australia-southeast1')
-  .runWith({ timeoutSeconds: 60, memory: '256MB' })
+  .runWith({
+    timeoutSeconds: 60,
+    memory: '256MB',
+    secrets: [MAILGUN_API_KEY, MAILGUN_DOMAIN]
+  })
   .https.onCall(async (data, context) => {
       const email = data.email;
 
@@ -83,9 +92,8 @@ async function enforceEmailCooldown(emailLower, cooldownSeconds) {
         });
 
         // --- 3. Email Dispatch via Mailgun ---
-        const config = functions.config();
-        const apiKey = config.mailgun.key;
-        const domain = config.mailgun.domain;
+        const apiKey = MAILGUN_API_KEY.value();
+        const domain = MAILGUN_DOMAIN.value();
 
         const fetch = (await import('node-fetch')).default;
         const response = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {

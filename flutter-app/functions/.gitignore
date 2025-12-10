@@ -1,0 +1,40 @@
+# Compiled JavaScript files
+**/*.js.map
+**/*.js
+
+# Ignore generated files (but allow index.js and other source files)
+!index.js
+!send_otp_email.js
+!verify_otp_email.js
+!global_payments_api.js
+!shopify_webhooks.js
+!basiq_api.js
+!payid_qr.js
+!delete_user_account.js
+!verify-secrets.js
+
+# Dependencies
+node_modules/
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# Firebase cache
+.firebase/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
