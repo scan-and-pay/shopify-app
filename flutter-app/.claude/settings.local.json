@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub get:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm run prisma:*)",
+      "Bash(npx prisma:*)",
+      "Bash(test:*)",
+      "Bash(./node_modules/.bin/prisma migrate:*)",
+      "Bash(npm install)",
+      "Bash(npm run deploy:*)",
+      "Bash(shopify app deploy:*)",
+      "Bash(shopify app webhook:*)",
+      "Bash(shopify webhook list --help:*)",
+      "Bash(shopify app config:*)",
+      "Bash(shopify help:*)",
+      "Bash(shopify app release:*)",
+      "Bash(shopify app versions:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

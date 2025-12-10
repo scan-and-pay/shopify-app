@@ -36,3 +36,10 @@ exports.checkGlobalPaymentsHealth = globalPaymentsApi.checkGlobalPaymentsHealth;
 // Export User Account Management functions
 const deleteUserAccount = require('./delete_user_account.js');
 exports.deleteUserAccount = deleteUserAccount.deleteUserAccount;
+
+// Export Shopify Webhook handlers
+const shopifyWebhooks = require('./shopify_webhooks');
+exports.appUninstalled = shopifyWebhooks.appUninstalled;
+exports.customersDataRequest = shopifyWebhooks.customersDataRequest;
+exports.customersRedact = shopifyWebhooks.customersRedact;
+exports.shopRedact = shopifyWebhooks.shopRedact;

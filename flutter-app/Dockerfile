@@ -30,6 +30,9 @@ RUN flutter pub get && \
 # Stage 2: Serve with Nginx
 FROM nginx:1.21.1-alpine
 COPY --from=build-env /app/build/web /usr/share/nginx/html
-RUN sed -i 's/listen       80;/listen       8080;/g' /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx config that proxies webhooks to Firebase Functions
+COPY nginx-webhook.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
