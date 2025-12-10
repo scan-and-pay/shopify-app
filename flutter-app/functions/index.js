@@ -56,3 +56,8 @@ exports.appUninstalled = shopifyWebhooks.appUninstalled;
 exports.customersDataRequest = shopifyWebhooks.customersDataRequest;
 exports.customersRedact = shopifyWebhooks.customersRedact;
 exports.shopRedact = shopifyWebhooks.shopRedact;
+
+// Export Shopify Session Token Auth functions (for embedded app)
+const shopifySessionToken = require('./shopify_session_token');
+exports.getMerchantData = shopifySessionToken.getMerchantData;
+exports.generatePayIDQRWithAuth = shopifySessionToken.generatePayIDQRWithAuth;
