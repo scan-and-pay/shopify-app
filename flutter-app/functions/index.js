@@ -16,6 +16,7 @@ const SHOPIFY_API_SECRET = defineSecret("SHOPIFY_API_SECRET");
 // Initialize Firebase Admin only if not already initialized
 admin.initializeApp();
 
+// Export OTP functions (already properly configured with secrets)
 const sendOtp = require('./send_otp_email.js');
 exports.sendOtp = sendOtp.sendOtp;
 
@@ -55,17 +56,3 @@ exports.appUninstalled = shopifyWebhooks.appUninstalled;
 exports.customersDataRequest = shopifyWebhooks.customersDataRequest;
 exports.customersRedact = shopifyWebhooks.customersRedact;
 exports.shopRedact = shopifyWebhooks.shopRedact;
-
-// Export secrets for use in other modules
-module.exports.secrets = {
-  FIREBASE_PROJECT_ID,
-  FIREBASE_API_KEY,
-  FIREBASE_STORAGE_BUCKET,
-  GLOBALPAYMENTS_MASTER_KEY,
-  GLOBALPAYMENTS_BASE_URL,
-  MAILGUN_API_KEY,
-  MAILGUN_DOMAIN,
-  BASIQ_API_KEY,
-  ENCRYPTION_KEY,
-  SHOPIFY_API_SECRET
-};

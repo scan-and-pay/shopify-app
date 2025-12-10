@@ -33,6 +33,7 @@ function verifyShopifyWebhook(bodyBuffer, hmacHeader) {
  * Called when merchant uninstalls the app
  */
 exports.appUninstalled = functions
+  .region('australia-southeast1')
   .runWith({ secrets: [SHOPIFY_API_SECRET] })
   .https.onRequest(async (req, res) => {
   // Set CORS headers
@@ -103,6 +104,7 @@ exports.appUninstalled = functions
  * GDPR compliance - customer requests their data
  */
 exports.customersDataRequest = functions
+  .region('australia-southeast1')
   .runWith({ secrets: [SHOPIFY_API_SECRET] })
   .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
@@ -173,6 +175,7 @@ exports.customersDataRequest = functions
  * GDPR compliance - delete customer data
  */
 exports.customersRedact = functions
+  .region('australia-southeast1')
   .runWith({ secrets: [SHOPIFY_API_SECRET] })
   .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
@@ -257,6 +260,7 @@ exports.customersRedact = functions
  * GDPR compliance - delete all shop data (48 hours after uninstall)
  */
 exports.shopRedact = functions
+  .region('australia-southeast1')
   .runWith({ secrets: [SHOPIFY_API_SECRET] })
   .https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
