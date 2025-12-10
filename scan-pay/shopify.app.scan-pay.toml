@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "e2af15a811bed53da75d916157c06ce4"
+client_id = "c8e9eb698f57cdc0a5d62d83c9137436"
 name = "Scan & Pay"
 application_url = "https://example.com"
 embedded = true
